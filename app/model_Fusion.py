@@ -29,7 +29,7 @@ def preprocess_image(image_path):
     return features
 
 # Charger le modèle fusionné
-combined_model_path = "/Users/flavien/Desktop/Fusion/combined_model_trained.h5"
+combined_model_path = "C:\\aug23_cmlops_rakuten\\combined_model_trained.h5"
 combined_model = load_model(combined_model_path, custom_objects={'TFBertModel': TFBertModel})
 
 # Liste des prdtypecode

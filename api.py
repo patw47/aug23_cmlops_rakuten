@@ -10,7 +10,8 @@ app = FastAPI()
 # Chargement du modèle BERT
 
 loaded_bert_model = TFBertModel.from_pretrained('bert-base-multilingual-cased')
-loaded_bert_model.load_weights(r'C:\Users\PatriciaWintrebert\Projects\Rakuten MLOps\MLOps_API\model\model_bert.h5')
+# loaded_bert_model.load_weights(r'C:\Users\PatriciaWintrebert\Projects\Rakuten MLOps\MLOps_API\model\model_bert.h5')
+loaded_bert_model.load_weights(r'C:/aug23_cmlops_rakuten/combined_model_trained.h5')
 
 # Fonction pour effectuer la tokenisation et la prédiction
 def predict_with_model(texts: List[str]):
