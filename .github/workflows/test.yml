@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install tensorflow-intel
+        pip install tensorflow==2.14.0
         python -m pip install -r requirements.txt
         pip install fastapi[all]
         pip install pytest
