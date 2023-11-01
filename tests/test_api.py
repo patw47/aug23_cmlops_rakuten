@@ -1,16 +1,15 @@
 import pytest
-import tempfile
 from fastapi.testclient import TestClient
-from app.model_Fusion import predict
 from app.main import app
-import json
-from PIL import Image, ImageDraw, ImageFont
+from app.model_Fusion import predict
+from PIL import Image, ImageDraw
 import io
 from unittest.mock import patch, MagicMock
 
+# Créer un client de test pour l'application
 client = TestClient(app)
 
-# Créer une image simulée en mémoire
+# Fonction pour créer une image simulée en mémoire
 def create_simulated_image():
     # Créer une image vide de 100x100 pixels avec un fond blanc
     image = Image.new("RGB", (100, 100), (255, 255, 255))
@@ -28,6 +27,14 @@ def create_simulated_image():
 
     return image_buffer
 
+# Mock pour la fonction predict
+def mock_predict(text, image_path):
+    # Simuler la prédiction avec des valeurs fictives
+    return "123", "Exemple"
+
+# Redéfinition de la fonction predict avec le mock
+app.dependency_overrides[predict] = mock_predict
+
 def test_predict_endpoint():
     # Simuler un fichier d'image temporaire pour le test
     simulated_image = create_simulated_image()
@@ -35,23 +42,14 @@ def test_predict_endpoint():
     # Texte pour la prédiction
     text_data = "Exemple de texte pour la prédiction"
 
-    # Créer un mock pour la fonction load_model
-    with patch("app.model_Fusion.load_model") as mock_load_model:
-        # Configurer le mock pour qu'il retourne un modèle factice
-        mock_model = MagicMock()
-        mock_load_model.return_value = mock_model
+    # Envoi de la requête POST au point de terminaison
+    response = client.post("/model/fusion/predict", data={"text": text_data}, files={"image": ("temp_image.jpg", simulated_image, "image/jpeg")})
 
-        # Préparez la requête POST avec l'image simulée
-        image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
-
-        # Envoi requête POST au point de terminaison
-        response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
-
-        # Vérifier la réponse 
-        assert response.status_code == 200
-        result = response.json()
-        assert "prdtypecode" in result
-        assert "thematique" in result
+    # Vérification de la réponse
+    assert response.status_code == 200
+    result = response.json()
+    assert "prdtypecode" in result
+    assert "thematique" in result
 
 # Exécutez le test avec pytest
 if __name__ == "__main__":
