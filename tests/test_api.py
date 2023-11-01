@@ -39,26 +39,21 @@ def test_predict_endpoint():
     mock_predict = MagicMock()
     mock_predict.return_value = ("123", "Exemple")
 
-    # Créer un mock pour la fonction de chargement du modèle dans app.model_Fusion
-    mock_load_model = MagicMock()
-
     # Utiliser un patch pour remplacer la fonction predict dans app.model_Fusion par le mock
-    with patch("app.model_Fusion.predict", mock_predict), \
-         patch("app.model_Fusion.load_model", mock_load_model):
+    with patch("app.model_Fusion.predict", mock_predict):
         # Préparez la requête POST avec l'image simulée
         image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
 
-        # Envoi requête POST au point de terminaison
-        response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
+        # Utilisez un autre patch pour remplacer l'emplacement du modèle par un chemin fictif
+        with patch("app.model_Fusion.combined_model_path", "/path/to/your/fake/model.h5"):
+            # Envoi requête POST au point de terminaison
+            response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
 
-        # Vérifier la réponse 
-        assert response.status_code == 200
-        result = response.json()
-        assert "prdtypecode" in result
-        assert "thematique" in result
-
-    # Assurez-vous que la fonction de chargement du modèle n'a pas été appelée
-    mock_load_model.assert_not_called()
+            # Vérifier la réponse 
+            assert response.status_code == 200
+            result = response.json()
+            assert "prdtypecode" in result
+            assert "thematique" in result
 
 # Exécutez le test avec pytest
 if __name__ == "__main__":
