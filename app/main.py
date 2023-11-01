@@ -3,10 +3,10 @@ from fastapi import FastAPI, HTTPException, Depends, UploadFile, File , Form
 from pydantic import BaseModel
 import tempfile
 import shutil
-import data_query
-import data_update
-import log
-import model_update
+#import data_query
+#import data_update
+#import log
+#import model_update
 from model_RESNET import predict_category as predict_category_resnet
 from model_BERT import modele_bert, convert_prediction_to_thematique_and_code
 import numpy as np
