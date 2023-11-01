@@ -60,3 +60,6 @@ def test_predict_endpoint():
     # Assurez-vous que la fonction de chargement du modèle n'a pas été appelée
     mock_load_model.assert_not_called()
 
+# Exécutez le test avec pytest
+if __name__ == "__main__":
+    pytest.main([__file__])
