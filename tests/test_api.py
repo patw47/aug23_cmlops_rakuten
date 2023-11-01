@@ -35,15 +35,12 @@ def test_predict_endpoint():
     # Texte pour la prédiction
     text_data = "Exemple de texte pour la prédiction"
 
-    # Créer un mock pour le modèle
-    mock_model = MagicMock()
-    mock_model.predict.return_value = {
-        "prdtypecode": "123",
-        "thematique": "Exemple"
-    }
+    # Créer un mock pour la fonction predict du module app.model_Fusion
+    mock_predict = MagicMock()
+    mock_predict.return_value = ("123", "Exemple")
 
-    # Utiliser un patch pour remplacer le modèle réel par le mock
-    with patch("app.model_Fusion.model", mock_model):
+    # Utiliser un patch pour remplacer la fonction predict dans app.model_Fusion par le mock
+    with patch("app.model_Fusion.predict", mock_predict):
         # Préparez la requête POST avec l'image simulée
         image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
 
