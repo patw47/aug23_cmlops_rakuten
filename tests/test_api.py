@@ -45,7 +45,7 @@ def test_predict_endpoint():
         image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
 
         # Utilisez un autre patch pour remplacer l'emplacement du modèle par un chemin fictif
-        with patch("app.model_Fusion.combined_model_path", "/path/to/your/fake/model.h5"):
+        with patch("app.model_Fusion.combined_model_path", "/Users/PatriciaWintrebert/Downloads/combined_model_trained.h5"):
             # Envoi requête POST au point de terminaison
             response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
 
