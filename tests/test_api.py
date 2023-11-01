@@ -6,6 +6,7 @@ from app.main import app
 import json
 from PIL import Image, ImageDraw, ImageFont
 import io
+from unittest.mock import patch, MagicMock
 
 client = TestClient(app)
 
@@ -34,16 +35,27 @@ def test_predict_endpoint():
     # Texte pour la prédiction
     text_data = "Exemple de texte pour la prédiction"
 
-    # Préparez la requête POST avec l'image simulée
-    image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
+    # Créer un mock pour le modèle
+    mock_model = MagicMock()
+    mock_model.predict.return_value = {
+        "prdtypecode": "123",
+        "thematique": "Exemple"
+    }
 
-    # Envoi requête POST au point de terminaison
-    response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
+    # Utiliser un patch pour remplacer le modèle réel par le mock
+    with patch("app.model_Fusion.model", mock_model):
+        # Préparez la requête POST avec l'image simulée
+        image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
 
-    # Check réponse 
-    assert response.status_code == 200
-    result = response.json()
-    assert "prdtypecode" in result
-    assert "thematique" in result
+        # Envoi requête POST au point de terminaison
+        response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
 
+        # Vérifier la réponse 
+        assert response.status_code == 200
+        result = response.json()
+        assert "prdtypecode" in result
+        assert "thematique" in result
 
+# Exécutez le test avec pytest
+if __name__ == "__main__":
+    pytest.main([__file__])
