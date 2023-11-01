@@ -27,7 +27,8 @@ jobs:
         pip install fastapi[all]
         pip install pytest
 
-    - name: Run tests
+    - name: Test with pytest
+      working-directory: tests/
       run: |
         pytest
 
