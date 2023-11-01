@@ -35,25 +35,23 @@ def test_predict_endpoint():
     # Texte pour la prédiction
     text_data = "Exemple de texte pour la prédiction"
 
-    # Créer un mock pour la fonction predict du module app.model_Fusion
-    mock_predict = MagicMock()
-    mock_predict.return_value = ("123", "Exemple")
+    # Créer un mock pour la fonction load_model
+    with patch("app.model_Fusion.load_model") as mock_load_model:
+        # Configurer le mock pour qu'il retourne un modèle factice
+        mock_model = MagicMock()
+        mock_load_model.return_value = mock_model
 
-    # Utiliser un patch pour remplacer la fonction predict dans app.model_Fusion par le mock
-    with patch("app.model_Fusion.predict", mock_predict):
         # Préparez la requête POST avec l'image simulée
         image_file = ("image", ("temp_image.jpg", simulated_image, "image/jpeg"))
 
-        # Utilisez un autre patch pour remplacer l'emplacement du modèle par un chemin fictif
-        with patch("app.model_Fusion.combined_model_path", "/Users/PatriciaWintrebert/Downloads/combined_model_trained.h5"):
-            # Envoi requête POST au point de terminaison
-            response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
+        # Envoi requête POST au point de terminaison
+        response = client.post("/model/fusion/predict", data={"text": text_data}, files=[image_file])
 
-            # Vérifier la réponse 
-            assert response.status_code == 200
-            result = response.json()
-            assert "prdtypecode" in result
-            assert "thematique" in result
+        # Vérifier la réponse 
+        assert response.status_code == 200
+        result = response.json()
+        assert "prdtypecode" in result
+        assert "thematique" in result
 
 # Exécutez le test avec pytest
 if __name__ == "__main__":
